@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoadAid Network - Interactive Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-500: #6366f1;
+            --accent-orange: #f97316;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: rgba(26, 26, 46, 0.8);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            --gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+            --gradient-accent: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+            --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-secondary);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .sidebar-cta {
+            margin-top: auto;
+            padding-top: 24px;
+        }
+
+        /* Main */
+        .main {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .badge {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 999px;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary-500);
+        }
+
+        .badge-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Actions */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .action-card {
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .action-card:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary-500);
+            transform: translateY(-4px);
+        }
+
+        .action-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        /* Requests */
+        .requests-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            cursor: pointer;
+        }
+
+        .request-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .request-info h4 {
+            margin-bottom: 4px;
+        }
+
+        .request-info p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .input,
+        .textarea {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--text-primary);
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+
+        .input:focus,
+        .textarea:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .vehicle-option {
+            background: var(--bg-glass);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .vehicle-option:hover {
+            border-color: var(--primary-500);
+        }
+
+        .vehicle-option.selected {
+            border-color: var(--primary-500);
+            background: rgba(99, 102, 241, 0.2);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .vehicle-option .icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .urgency-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .urgency-option {
+            background: var(--bg-glass);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+        }
+
+        .urgency-option:hover {
+            border-color: var(--primary-500);
+        }
+
+        .urgency-option.selected {
+            border-color: var(--primary-500);
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        /* Active Request */
+        .active-banner {
+            background: var(--gradient-primary);
+            border-radius: var(--radius-xl);
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            cursor: pointer;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.9;
+            }
+        }
+
+        .banner-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .banner-icon {
+            font-size: 2rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .map-placeholder {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-xl);
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .eta-card {
+            background: var(--gradient-primary);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            text-align: center;
+        }
+
+        .eta-value {
+            font-size: 3rem;
+            font-weight: 800;
+        }
+
+        .eta-label {
+            opacity: 0.8;
+        }
+
+        .helper-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-glass);
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+
+        .helper-avatar {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Chat */
+        .chat-container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 16px;
+        }
+
+        .message.own {
+            align-self: flex-end;
+            background: var(--gradient-primary);
+        }
+
+        .message.other {
+            align-self: flex-start;
+            background: var(--bg-glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input-form {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            margin-top: 16px;
+        }
+
+        .chat-input-form .input {
+            flex: 1;
+        }
+
+        /* Profile */
+        .profile-card {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        /* Notifications */
+        .notification-item {
+            display: flex;
+            align-items: start;
+            gap: 16px;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .notification-item.unread {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 3px solid var(--primary-500);
+        }
+
+        .notification-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--bg-glass);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content h4 {
+            margin-bottom: 4px;
+        }
+
+        .notification-content p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--error);
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .helper-cta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .stats-grid,
+            .status-panel {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .vehicle-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">🚗</div>
+                <span class="logo-text">RoadAid</span>
+            </div>
+            <nav class="nav" id="nav">
+                <div class="nav-item active" data-page="dashboard"><span>🏠</span><span>Dashboard</span></div>
+                <div class="nav-item" data-page="new-request"><span>➕</span><span>New Request</span></div>
+                <div class="nav-item" data-page="requests"><span>📋</span><span>My Requests</span></div>
+                <div class="nav-item" data-page="notifications"><span>🔔</span><span>Notifications</span></div>
+                <div class="nav-item" data-page="profile"><span>👤</span><span>Profile</span></div>
+            </nav>
+            <div class="sidebar-cta">
+                <button class="btn btn-accent w-full"
+                    onclick="showToast('Helper registration coming soon!', 'success')">🔧 Become a Helper</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- Dashboard Page -->
+            <div class="page active" id="page-dashboard">
+                <div class="header">
+                    <div>
+                        <h1>Welcome back, User! 👋</h1>
+                        <p>Need roadside assistance? We've got you covered.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="navigateTo('new-request')">🚨 Get Help Now</button>
+                </div>
+
+                <div class="active-banner" onclick="navigateTo('active-request')">
+                    <div class="banner-content">
+                        <span class="banner-icon">🔔</span>
+                        <div>
+                            <h3>Active Request</h3>
+                            <p style="opacity: 0.8;">Helper is en route - Click to view</p>
+                        </div>
+                    </div>
+                    <span class="badge badge-success">En Route</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card card">
+                        <div class="stat-icon">📋</div>
+                        <div>
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Total Requests</div>
+                        </div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-icon">✅</div>
+                        <div>
+                            <div class="stat-value">10</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                    </div>
+                    <div class="stat-card card">
+                        <div class="stat-icon">🔄</div>
+                        <div>
+                            <div class="stat-value">1</div>
+                            <div class="stat-label">Active</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="section-title">Quick Actions</h2>
+                <div class="actions-grid">
+                    <div class="action-card" onclick="selectIssue('Flat Tire')">
+                        <div class="action-icon">🚗</div><span>Flat Tire</span>
+                    </div>
+                    <div class="action-card" onclick="selectIssue('Dead Battery')">
+                        <div class="action-icon">🔋</div><span>Dead Battery</span>
+                    </div>
+                    <div class="action-card" onclick="selectIssue('Out of Fuel')">
+                        <div class="action-icon">⛽</div><span>Out of Fuel</span>
+                    </div>
+                    <div class="action-card" onclick="selectIssue('Other Issue')">
+                        <div class="action-icon">🔧</div><span>Other Issue</span>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title" style="margin-bottom: 0;">Recent Requests</h2>
+                    <button class="btn btn-secondary" onclick="navigateTo('requests')">View All</button>
+                </div>
+                <div class="requests-list">
+                    <div class="request-item card" onclick="navigateTo('active-request')">
+                        <div class="request-info">
+                            <h4>Car - Sedan</h4>
+                            <p>Jan 4, 2026 at 3:45 PM</p>
+                        </div><span class="badge badge-success">Completed</span>
+                    </div>
+                    <div class="request-item card" onclick="showToast('View request details', 'success')">
+                        <div class="request-info">
+                            <h4>Motorcycle</h4>
+                            <p>Jan 2, 2026 at 11:20 AM</p>
+                        </div><span class="badge badge-success">Completed</span>
+                    </div>
+                </div>
+
+                <div class="helper-cta card" style="background: var(--bg-glass);">
+                    <div>
+                        <h3>🔧 Want to help others?</h3>
+                        <p style="color: var(--text-secondary);">Register as a helper and earn money.</p>
+                    </div>
+                    <button class="btn btn-accent"
+                        onclick="showToast('Helper registration coming soon!', 'success')">Become a Helper</button>
+                </div>
+            </div>
+
+            <!-- New Request Page -->
+            <div class="page" id="page-new-request">
+                <div class="header">
+                    <div>
+                        <h1>🚨 Get Help Now</h1>
+                        <p>Describe your issue and we'll connect you with nearby helpers.</p>
+                    </div>
+                </div>
+
+                <div class="card" style="max-width: 700px;">
+                    <div class="form-group">
+                        <div
+                            style="background: rgba(16, 185, 129, 0.1); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 12px; color: var(--success);">
+                            <span>📍</span><span>Location detected: Islamabad, Pakistan</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Vehicle Type</label>
+                        <div class="vehicle-grid" id="vehicleGrid">
+                            <div class="vehicle-option" onclick="selectVehicle(this, 'Car')">
+                                <div class="icon">🚗</div>
+                                <div>Car</div>
+                                <div style="color: var(--success); font-size: 0.875rem;">$30</div>
+                            </div>
+                            <div class="vehicle-option" onclick="selectVehicle(this, 'Motorcycle')">
+                                <div class="icon">🏍️</div>
+                                <div>Motorcycle</div>
+                                <div style="color: var(--success); font-size: 0.875rem;">$20</div>
+                            </div>
+                            <div class="vehicle-option" onclick="selectVehicle(this, 'Truck')">
+                                <div class="icon">🚚</div>
+                                <div>Truck</div>
+                                <div style="color: var(--success); font-size: 0.875rem;">$50</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Describe Your Issue</label>
+                        <textarea class="textarea" id="issueDescription"
+                            placeholder="E.g., Flat tire on the highway..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="label">Urgency Level</label>
+                        <div class="urgency-options" id="urgencyOptions">
+                            <div class="urgency-option" onclick="selectUrgency(this, 'low')"><span
+                                    style="font-size: 1.5rem;">🟢</span>
+                                <div>
+                                    <div style="font-weight: 600;">Low</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">Can wait</div>
+                                </div>
+                            </div>
+                            <div class="urgency-option selected" onclick="selectUrgency(this, 'medium')"><span
+                                    style="font-size: 1.5rem;">🟡</span>
+                                <div>
+                                    <div style="font-weight: 600;">Medium</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">Need soon</div>
+                                </div>
+                            </div>
+                            <div class="urgency-option" onclick="selectUrgency(this, 'high')"><span
+                                    style="font-size: 1.5rem;">🟠</span>
+                                <div>
+                                    <div style="font-weight: 600;">High</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">Urgent</div>
+                                </div>
+                            </div>
+                            <div class="urgency-option" onclick="selectUrgency(this, 'emergency')"><span
+                                    style="font-size: 1.5rem;">🔴</span>
+                                <div>
+                                    <div style="font-weight: 600;">Emergency</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-muted);">Safety risk</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-accent btn-lg w-full" onclick="submitRequest()">🚨 Request Help</button>
+                </div>
+            </div>
+
+            <!-- Active Request Page -->
+            <div class="page" id="page-active-request">
+                <div class="header">
+                    <div>
+                        <h1>Request Details</h1>
+                        <p>Car - Flat tire on highway</p>
+                    </div>
+                </div>
+
+                <div class="status-panel">
+                    <div class="map-placeholder">🗺️</div>
+                    <div>
+                        <div class="card" style="margin-bottom: 16px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div
+                                        style="width: 12px; height: 12px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite;">
+                                    </div>
+                                    <span style="font-weight: 600;">En Route</span>
+                                </div>
+                                <span class="badge badge-warning">Medium</span>
+                            </div>
+                            <p style="color: var(--text-secondary);">Helper is on the way to your location!</p>
+                        </div>
+
+                        <div class="eta-card">
+                            <div class="eta-value">8</div>
+                            <div class="eta-label">minutes ETA</div>
+                        </div>
+
+                        <div class="card" style="margin-top: 16px;">
+                            <h4 style="margin-bottom: 12px;">Your Helper</h4>
+                            <div class="helper-info">
+                                <div class="helper-avatar">A</div>
+                                <div>
+                                    <h4>Ahmed Khan</h4>
+                                    <p style="color: var(--text-muted); font-size: 0.875rem;">⭐ 4.9 • 156 jobs</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-full" style="margin-top: 16px;" onclick="navigateTo('chat')">💬
+                            Chat with Helper</button>
+                        <button class="btn btn-secondary w-full" style="margin-top: 12px;"
+                            onclick="cancelRequest()">Cancel Request</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Page -->
+            <div class="page" id="page-chat">
+                <div class="chat-container">
+                    <div class="card" style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                        <button class="btn btn-secondary" onclick="navigateTo('active-request')">←</button>
+                        <h2>💬 Chat with Ahmed</h2>
+                    </div>
+
+                    <div class="card messages" id="chatMessages">
+                        <div class="message other">
+                            <p>Hi! I'm on my way to your location. I should be there in about 8 minutes.</p>
+                        </div>
+                        <div class="message own">
+                            <p>Great, thank you! I'm near the blue Honda Civic.</p>
+                        </div>
+                        <div class="message other">
+                            <p>Perfect, I can see you on the map. Almost there!</p>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-form">
+                        <input type="text" class="input" id="chatInput" placeholder="Type a message...">
+                        <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Requests Page -->
+            <div class="page" id="page-requests">
+                <div class="header">
+                    <div>
+                        <h1>Request History</h1>
+                        <p>View all your past and current requests.</p>
+                    </div>
+                </div>
+
+                <div class="requests-list">
+                    <div class="request-item card" onclick="navigateTo('active-request')">
+                        <div class="request-info">
+                            <h4>Car - Sedan (Active)</h4>
+                            <p>Jan 5, 2026 at 1:20 AM</p>
+                        </div><span class="badge badge-primary">En Route</span>
+                    </div>
+                    <div class="request-item card">
+                        <div class="request-info">
+                            <h4>Car - Sedan</h4>
+                            <p>Jan 4, 2026 at 3:45 PM</p>
+                        </div><span class="badge badge-success">Completed</span>
+                    </div>
+                    <div class="request-item card">
+                        <div class="request-info">
+                            <h4>Motorcycle</h4>
+                            <p>Jan 2, 2026 at 11:20 AM</p>
+                        </div><span class="badge badge-success">Completed</span>
+                    </div>
+                    <div class="request-item card">
+                        <div class="request-info">
+                            <h4>SUV</h4>
+                            <p>Dec 28, 2025 at 6:15 PM</p>
+                        </div><span class="badge badge-success">Completed</span>
+                    </div>
+                    <div class="request-item card">
+                        <div class="request-info">
+                            <h4>Car - Hatchback</h4>
+                            <p>Dec 20, 2025 at 9:00 AM</p>
+                        </div><span class="badge badge-error">Cancelled</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notifications Page -->
+            <div class="page" id="page-notifications">
+                <div class="header">
+                    <div>
+                        <h1>🔔 Notifications</h1>
+                        <p>Stay updated with your requests.</p>
+                    </div>
+                    <button class="btn btn-secondary" onclick="showToast('All marked as read!', 'success')">Mark All
+                        Read</button>
+                </div>
+
+                <div class="requests-list">
+                    <div class="notification-item card unread">
+                        <div class="notification-icon">🚗</div>
+                        <div class="notification-content">
+                            <h4>Helper En Route</h4>
+                            <p>Ahmed Khan is on the way to your location.</p><span class="notification-time">2 minutes
+                                ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item card unread">
+                        <div class="notification-icon">✅</div>
+                        <div class="notification-content">
+                            <h4>Request Accepted</h4>
+                            <p>Your request has been accepted by Ahmed Khan.</p><span class="notification-time">10
+                                minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item card">
+                        <div class="notification-icon">💰</div>
+                        <div class="notification-content">
+                            <h4>Payment Received</h4>
+                            <p>Payment of $35 has been processed.</p><span class="notification-time">Yesterday</span>
+                        </div>
+                    </div>
+                    <div class="notification-item card">
+                        <div class="notification-icon">⭐</div>
+                        <div class="notification-content">
+                            <h4>Rate Your Experience</h4>
+                            <p>How was your service with Ali Raza?</p><span class="notification-time">2 days ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div class="page" id="page-profile">
+                <div class="header">
+                    <div>
+                        <h1>Profile Settings</h1>
+                        <p>Manage your account information.</p>
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div class="profile-header">
+                            <div class="profile-avatar">U</div>
+                            <div>
+                                <h2>Test User</h2>
+                                <p style="color: var(--text-muted);">user@example.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div
+                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>Personal Information</h3>
+                            <button class="btn btn-secondary"
+                                onclick="showToast('Edit mode enabled!', 'success')">Edit</button>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label">Full Name</label>
+                            <input type="text" class="input" value="Test User">
+                        </div>
+                        <div class="form-group">
+                            <label class="label">Email</label>
+                            <input type="email" class="input" value="user@example.com" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="label">Phone</label>
+                            <input type="tel" class="input" value="+92 300 1234567">
+                        </div>
+
+                        <button class="btn btn-primary" onclick="showToast('Profile saved!', 'success')">Save
+                            Changes</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"><span id="toastIcon">✅</span><span id="toastMessage"></span></div>
+
+    <script>
+        // Navigation
+        function navigateTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById('page-' + page).classList.add('active');
+            document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+        }
+
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => navigateTo(item.dataset.page));
+        });
+
+        // Vehicle selection
+        function selectVehicle(el, type) {
+            document.querySelectorAll('.vehicle-option').forEach(v => v.classList.remove('selected'));
+            el.classList.add('selected');
+            showToast(`Selected: ${type}`, 'success');
+        }
+
+        // Urgency selection
+        function selectUrgency(el, level) {
+            document.querySelectorAll('.urgency-option').forEach(u => u.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        // Quick action
+        function selectIssue(issue) {
+            document.getElementById('issueDescription').value = issue + ' - Need assistance';
+            navigateTo('new-request');
+            showToast(`Issue: ${issue}`, 'success');
+        }
+
+        // Submit request
+        function submitRequest() {
+            showToast('Request created! Searching for helpers...', 'success');
+            setTimeout(() => {
+                showToast('Helper found! Ahmed Khan accepted.', 'success');
+                navigateTo('active-request');
+            }, 2000);
+        }
+
+        // Cancel request
+        function cancelRequest() {
+            if (confirm('Are you sure you want to cancel?')) {
+                showToast('Request cancelled', 'error');
+                navigateTo('dashboard');
+            }
+        }
+
+        // Send message
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (msg) {
+                const messages = document.getElementById('chatMessages');
+                messages.innerHTML += `<div class="message own"><p>${msg}</p></div>`;
+                input.value = '';
+                messages.scrollTop = messages.scrollHeight;
+
+                // Simulate reply
+                setTimeout(() => {
+                    messages.innerHTML += `<div class="message other"><p>Got it! I'll be there shortly.</p></div>`;
+                    messages.scrollTop = messages.scrollHeight;
+                }, 1500);
+            }
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', e => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+
+            icon.textContent = type === 'success' ? '✅' : '❌';
+            msg.textContent = message;
+            toast.className = 'toast show toast-' + type;
+
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+
+</html>
